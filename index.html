@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>拖曳</title>
+    <style type="text/css">
+        .box {
+            width: 100px;
+            height: 100px;
+            background-color: red;
+            position: absolute;
+            left: 100px;
+            top: 100px;
+            /*用絕對定位 box才能跟著滑鼠動*/
+        }
+    </style>
+    <script>
+        var box;//全域變數
+        var x;
+        var y;
+        function init() {
+            box = document.getElementById("box");
+            box.addEventListener("mousedown", pickup);
+            box.addEventListener("mouseup", putdown);
+        }
+
+
+        function pickup(e) {
+            //紀錄使用者最初點下去的座標
+            var pickX = e.clientX;
+            var picky = e.clientY;
+
+            //計算使用者點下去的座標 與 box左上角的距離，並記錄在x與y中
+            x = e.clientX - box.offsetLeft;
+            y = e.clientY - box.offsetTop;
+
+            //讓box能動
+            /*希望box會在整份網頁(document)上移動。
+            所以document上只要有mousemove事件，就會執行move函式。*/
+            document.addEventListener("mousemove", move);
+        }
+
+
+        function move(e) {
+            box.style.cursor = "default";
+
+            //讓box動
+            /*解決移動時，鼠標跑到左上角的問題。
+            box往左上角移動 x 、y px*/
+            box.style.left = (e.clientX - x) + "px";
+            box.style.top = (e.clientY - y) + "px";
+        }
+
+        function putdown() {
+
+            //讓box不能動
+            /*移除mousemove事件所註冊的事件監聽器
+            當mousemove時不再呼叫function move*/
+            document.removeEventListener("mousemove", move);
+        }
+    </script>
+
+</head>
+
+<body onload="init();">
+    <div id="box" class="box"></div>
+</body>
+
+</html>
